@@ -1,0 +1,5 @@
+# seq1 twice as abundant as seq3, which is three times as abundant as seq2
+seq1 60
+seq2 10
+seq3 30
+

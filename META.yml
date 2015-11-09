@@ -1,0 +1,39 @@
+---
+abstract: 'A versatile omics shotgun and amplicon sequencing read simulator'
+author:
+  - 'Florent Angly <florent.angly@gmail.com>'
+build_requires:
+  ExtUtils::MakeMaker: 6.59
+  Test::More: 0
+configure_requires:
+  ExtUtils::MakeMaker: 6.59
+distribution_type: module
+dynamic_config: 1
+generated_by: 'Module::Install version 1.06'
+license: gpl3
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Grinder
+no_index:
+  directory:
+    - inc
+    - t
+requires:
+  Bio::DB::Fasta: 0
+  Bio::Location::Split: 0
+  Bio::PrimarySeq: 0
+  Bio::Root::Root: 0
+  Bio::Root::Version: 1.006901
+  Bio::SeqIO: 0
+  Getopt::Euclid: 0.3.4
+  List::Util: 0
+  Math::Random::MT: 1.16
+  perl: 5.6.0
+  version: 0.77
+resources:
+  bugtracker: http://sourceforge.net/tracker/?group_id=244196&atid=1124737
+  homepage: http://sourceforge.net/projects/biogrinder/
+  license: http://opensource.org/licenses/gpl-3.0.html
+  repository: git://biogrinder.git.sourceforge.net/gitroot/biogrinder/biogrinder
+version: 0.005003

@@ -1,0 +1,483 @@
+<tool id="grinder" name="Grinder" version="0.4.7">
+
+  <description>versatile omic shotgun and amplicon read simulator</description>
+
+  <requirements>
+    <requirement type="binary">grinder</requirement>
+  </requirements>
+
+  <version_string>grinder --version</version_string>
+
+  <command interpreter="python">
+    stderr_wrapper.py
+      grinder
+      #if $reference_file.specify == "builtin":
+        -reference_file   ${ filter( lambda x: str( x[0] ) == str( $reference_file.value ), $__app__.tool_data_tables[ 'all_fasta' ].get_fields() )[0][-1] }
+      #else if $reference_file.specify == "uploaded":
+        -reference_file   $reference_file.value
+      #end if
+      #if str($coverage_fold):
+        -coverage_fold    $coverage_fold
+      #end if
+      #if str($total_reads):
+        -total_reads      $total_reads
+      #end if
+      #if str($read_dist):
+        -read_dist        $read_dist
+      #end if
+      #if str($insert_dist):
+        -insert_dist      $insert_dist
+      #end if
+      #if str($mate_orientation):
+        -mate_orientation $mate_orientation
+      #end if
+      #if str($exclude_chars):
+        -exclude_chars    $exclude_chars
+      #end if
+      #if str($delete_chars):
+        -delete_chars     $delete_chars
+      #end if
+      #if str($forward_reverse) != "None":
+        -forward_reverse  $forward_reverse
+      #end if
+      #if str($unidirectional):
+        -unidirectional   $unidirectional
+      #end if
+      #if str($length_bias):
+        -length_bias      $length_bias
+      #end if
+      #if str($copy_bias):
+        -copy_bias        $copy_bias
+      #end if
+      #if str($mutation_dist):
+        -mutation_dist    $mutation_dist
+      #end if
+      #if str($mutation_ratio):
+        -mutation_ratio   $mutation_ratio
+      #end if
+      #if str($homopolymer_dist):
+        -homopolymer_dist $homopolymer_dist
+      #end if
+      #if str($chimera_perc):
+        -chimera_perc     $chimera_perc
+      #end if
+      #if str($chimera_dist):
+        -chimera_dist     $chimera_dist
+      #end if
+      #if str($chimera_kmer):
+        -chimera_kmer     $chimera_kmer
+      #end if
+      #if str($abundance_file) != "None":
+        -abundance_file   $abundance_file
+      #end if
+      #if str($abundance_model):
+        -abundance_model  $abundance_model
+      #end if
+      #if str($num_libraries):
+        -num_libraries    $num_libraries
+      #end if
+      #if str($multiplex_ids) != "None":
+        -multiplex_ids    $multiplex_ids
+      #end if
+      #if str($diversity):
+        -diversity        $diversity
+      #end if
+      #if str($shared_perc):
+        -shared_perc      $shared_perc
+      #end if
+      #if str($permuted_perc):
+        -permuted_perc    $permuted_perc
+      #end if
+      #if str($random_seed):
+        -random_seed      $random_seed
+      #end if
+      #if str($permuted_perc):
+        -desc_track       $desc_track
+      #end if
+      #if str($qual_levels):
+        -qual_levels      $qual_levels
+      #end if
+      #if str($fastq_output) == '1':
+        -fastq_output     $fastq_output
+      #end if
+      #if str($profile_file) != "None":
+        -profile_file     $profile_file.value
+      #end if
+      <!-- When Galaxy bug #661 is resolved, then we can use the same method to check for all optional argument  -->
+      <!-- i.e. either   if str($param) != "None":   or   if str($param):                                        -->
+      <!-- URL: https://bitbucket.org/galaxy/galaxy-central/issue/661/optional-arguments-problems#comment-655611 -->
+  </command>
+
+  <inputs>
+
+    <conditional name="reference_file">
+      <param name="specify" type="select" label="Specify">
+        <option value="builtin">Built-in file</option>
+        <option value="uploaded">Uploaded file</option>
+      </param>
+      <when value="builtin">
+        <param name="value" type="select" label="Reference sequences (genomes, genes, transcripts, proteins)" help="Galaxy built-in FASTA file">
+          <options from_data_table="all_fasta" />
+        </param>
+      </when>
+      <when value="uploaded">
+        <param name="value" type="data" format="fasta" label="Reference sequences" help="FASTA file that contains the input reference sequences" />
+      </when>
+    </conditional>
+
+    <param name="total_reads" type="text" value="100" optional="true" label="Number of reads" help="Number of shotgun or amplicon reads to generate for each library. Do not specify this if you specify the fold coverage." />
+
+    <param name="coverage_fold" type="text" optional="true" label="Coverage fold" help="Desired fold coverage of the input reference sequences (the output FASTA length divided by the input FASTA length). Do not specify this if you specify the number of reads directly." />
+
+    <param name="read_dist" type="text" value="100" optional="true" label="Sequence length distribution" help="Desired sequence length distribution specified as:
+  average length, distribution ('uniform' or 'normal') and standard deviation
+Only the first element is required.
+Examples:
+   1/ All reads exactly 101 bp long (Illumina GA 2x): 101
+   2/ Uniform read distribution around 100+-10 bp: 100 uniform 10
+   3/ Reads normally distributed with an average of 800 and a standard deviation
+      of 100 bp (Sanger reads): 800 normal 100
+   4/ Reads normally distributed with an average of 450 and a standard deviation
+      of 50 bp (454 GS-FLX Ti): 450 normal 50
+Reference sequences smaller than the specified read length are not used." />
+
+    <param name="insert_dist" type="text" value="0" optional="true" label="Insert size distribution" help="Create paired-end or mate-pair reads spanning the given insert length. Important: the insert is defined in the biological sense, i.e. its length includes the length of both reads and of the stretch of DNA between them:
+   0 : off,
+   or: insert size distribution in bp, in the same format as the read length
+       distribution (a typical value is 2,500 bp)
+Two distinct reads are generated whether or not the mate pair overlaps." />
+
+    <param name="mate_orientation" type="text" value="FR" optional="true" label="Mate orientation" help="When generating paired-end or mate-pair reads (see the insert distribution parameter), specify the orientation of the reads (F: forward, R: reverse): FR for Sanger or Illumina paired-end, FF for 454, RF for Illumina mate-pairs, or RR" />
+
+    <param name="exclude_chars" type="text" optional="true" label="Characters to exclude" help="Do not create reads containing any of the specified characters (case insensitive), e.g. 'N-' to prevent reads with gaps (-) or ambiguities (N)." />
+
+    <param name="delete_chars" type="text" optional="true" label="Characters to delete" help="Remove the specified characters from the reference sequences (case insensitive), e.g. 'N-' to remove gaps (-) and ambiguities (N)." />
+
+    <param name="forward_reverse" type="data" format="fasta" optional="true" label="Amplicon primers" help="Use DNA amplicon sequencing using a forward and reverse PCR primer sequence provided in a FASTA file. The primer sequences should use the IUPAC convention for degenerate residues and the reference sequences that that do not match the specified primers are excluded. If your reference sequences are full genomes, it is recommended to turn the copy number bias option on and the length bias option off reads. To sequence from the forward strand, set the sequencing direction option to 1 and put the forward primer first and reverse primer second in the FASTA file. To sequence from the reverse strand, invert the primers in the FASTA file and use -1 for the sequencing direction option. The second primer sequence in the FASTA file is always optional. Example: AAACTYAAAKGAATTGRCGG and ACGGGCGGTGTGTRC for the 926F and 1392R primers that target the V6 to V9 region of the 16S rRNA gene." />
+
+    <param name="unidirectional" type="select" display="radio" value="0" label="Sequencing direction" help="Instead of producing reads bidirectionally, from the reference strand and its reverse complement, proceed unidirectionally, from one strand only (forward or reverse). Values: 0 (off, i.e. bidirectional), 1 (forward), -1 (reverse). Use the value 1 for strand specific transcriptomic or proteomic datasets.">
+      <option value="0">both strands</option>
+      <option value="1">forward strand only</option>
+      <option value="-1">reverse strand only</option>
+    </param>
+
+    <param name="length_bias" type="boolean" truevalue="1" falsevalue="0" checked="true" label="Length bias" help="In shotgun libraries, sample reference sequences proportionally to their length. For example, in simulated microbial datasets, this means that at the same relative abundance, larger genomes contribute more reads than smaller genomes. 0 = no, 1 = yes." />
+
+    <param name="copy_bias" type="boolean" truevalue="1" falsevalue="0" checked="true" label="Copy number bias" help="In amplicon libraries where full genomes are used as input, sample species proportionally to the number of copies of the target gene: at equal relative abundance, genomes that have multiple copies of the target gene contribute more amplicon reads than genomes that have a single copy. 0 = no, 1 = yes." />
+
+    <param name="mutation_dist" type="text" value="0" optional="true" label="Mutation distribution" help="Introduce sequencing errors in the reads, under the form of mutations (substitutions, insertions and deletions) at positions that follow a specified distribution (with replacement): model (uniform, linear, poly4), model parameters. For example, for a uniform 0.1% error rate, use: uniform 0.1. To simulate Sanger errors, use a linear model where the errror rate is 1% at the 5' end of reads and 2% at the 3' end: linear 1 2. To model Illumina errors using the 4th degree polynome 3e-3 + 3.3e-8 * i^4 (Korbel et al 2009), use: poly4 3e-3 3.3e-8. Use the mutation ratio option to alter how many of these mutations are substitutions
+or indels." />
+
+    <param name="mutation_ratio" type="text" value="80 20" optional="true" label="Mutation ratio" help="Indicate the percentage of substitutions and the number of indels (insertions and deletions). For example, use '80 20' (4 substitutions for each indel) for Sanger reads. Note that this parameter has no effect unless you specify the mutation distribution option." />
+
+    <param name="homopolymer_dist" type="text" value="0" optional="true" label="Homopolymer distribution" help="Introduce sequencing errors in the reads under the form of homopolymeric stretches (e.g. AAA, CCCCC) using a specified model where the homopolymer length
+follows a normal distribution N(mean, standard deviation) that is function of
+the homopolymer length n.
+   Margulies: N(n, 0.15 * n),               Margulies et al. 2005.
+   Richter:   N(n, 0.15 * sqrt(n)),         Richter et al. 2008.
+   Balzer:    N(n, 0.03494 + n * 0.06856),  Balzer et al. 2010." />
+
+    <param name="chimera_perc" type="text" value="0" optional="true" label="Percentage of chimeras" help="Specify the percent of reads in amplicon libraries that should be chimeric sequences. The 'reference' field in the description of chimeric reads will
+contain the ID of all the reference sequences forming the chimeric template. A typical value is 10%." />
+
+    <param name="chimera_dist" type="text" value="314 38 1" optional="true" label="Multimera distribution" help="Specify the distribution of chimeras: bimeras, trimeras, quadrameras and multimeras of higher order. The default is the average values from Quince et al. 2011: '314 38 1', which corresponds to 89% of bimeras, 11% of trimeras and 0.3% of quadrameras. Note that this option only takes effect when you request the generation of chimeras with the chimera percentage option." />
+
+    <param name="chimera_kmer" type="text" value="10" optional="true" label="k-mer based chimeras" help="Activate a method to form chimeras by picking breakpoints at places where k-mers are shared between sequences. The value to provide to this option represents k, the length of the k-mers (in bp). The longer the kmer, the more similar the sequences have to be to be eligible to form chimeras. The more frequent a k-mer is in the pool of reference sequences (taking into account their relative abundance), the more often this k-mer will be chosen. For example, CHSIM (Edgar et al. 2011) uses a k-mer length of 10 bp. If you do not want to use k-mer information to form chimeras, use 0, which will result in the reference sequences and breakpoints to be taken randomly. Note that this option only takes effect when you request the generation of chimeras with the chimera percentage option." />
+
+    <param name="abundance_file" type="data" format="tabular" optional="true" label="Abundance file" help="Specify the relative abundance of the reference sequencse manually in an input file. Each line of the file should contain a sequence name and its relative abundance (%), e.g. 'seqABC 82.1' or 'seqABC 82.1 10.2' if you are specifying two different libraries." />
+
+    <param name="abundance_model" type="text" value="uniform 1" optional="true" label="Rank abundance model" help="Relative abundance model for the input reference sequences: uniform, linear, powerlaw, logarithmic or exponential. The uniform and linear models do not require a parameter, but the other models take a parameter in the range [0, infinity). If this parameter is not specified, then it is randomly chosen. Examples:
+
+  uniform distribution: uniform
+  powerlaw distribution with parameter 0.1: powerlaw 0.1
+  exponential distribution with automatically chosen parameter: exponential" />
+
+    <param name="num_libraries" type="text" value="1" optional="true" label="Number of libraries" help="Number of independent libraries to create. Specify how diverse and similar they should be using the diversity, shared percent and permuted percent options. Assign them different MID tags with the multiplex mids option. Note that in Galaxy, the maximum number of libraries is 10." />
+
+    <param name="multiplex_ids" type="data" format="fasta" optional="true" label="Specify MID tags file" help="Specify an optional FASTA file that contains sequence identifiers (a.k.a MIDs or barcodes) to add to the sequences (one sequence per library)."/>
+
+    <!-- When Galaxy bug #661 is resolved, then we can really have optional parameters of type "integer" or "float" -->
+    <!-- URL: https://bitbucket.org/galaxy/galaxy-central/issue/661/optional-arguments-problems#comment-655611      -->
+    <!-- Affected params: diversity (int), shared_perc (float), permuted_perc (float), random_seed (int), num_libraries (int), chimera_perc (float)  -->
+    <param name="diversity" type="text" optional="true" label="Diversity (richness)" help="Richness, or number of reference sequences to include in the shotgun libraries. Use 0 for the maximum diversity possible (based on the number of reference sequences
+available). Provide one value to make all libraries have the same diversity, or one diversity value per library otherwise." />
+
+    <param name="shared_perc" type="text" value="0" optional="true" label="Percent shared" help="For multiple libraries, percent of reference sequences they should have in common (relative to the diversity of the least diverse library)." />
+
+    <param name="permuted_perc" type="text" value="0" optional="true" label="Percent permuted" help="For multiple libraries, percent of the most-abundant reference sequences to permute in rank-abundance." />
+
+    <param name="random_seed" type="text" optional="true" label="Random seed" help="Seed number to use for the pseudo-random number generator." />
+
+    <param name="desc_track" type="boolean" truevalue="1" falsevalue="0" checked="true" label="Read tracking" help="Track read information (reference sequence, position, errors, ...) by writing it in the FASTA read description." />
+
+    <param name="qual_levels" type="text" optional="true" label="Quality score levels" help="Generate basic quality scores for the simulated reads. Good residues are given a specified good score (e.g. 30) and residues that are the result of an insertion or substitution are given a specified bad score (e.g. 10). Specify first the good score and then the bad score, e.g. '30 10'" />
+
+    <param name="fastq_output" type="boolean" truevalue="1" falsevalue="0" checked="false" label="FASTQ output" help="
+Write the generated reads in FASTQ format (Sanger variant) instead of FASTA and
+QUAL. Quality score levels need to be specified for this option to be effective." />
+
+    <param name="profile_file" type="data" format="txt" optional="true" label="Profile file" help="A file that contains Grinder arguments. This is useful if you use many options or often use the same options. Lines with comments (#) are ignored. Consider the profile file, 'simple_profile.txt':
+
+    # A simple Grinder profile
+    -read_dist 105 normal 12
+    -total_reads 1000
+
+Running: grinder -reference_file viral_genomes.fa -profile_file simple_profile.txt
+
+Translates into: grinder -reference_file viral_genomes.fa -read_dist 105 normal 12 -total_reads 1000
+
+Note that the arguments specified in the profile should not be specified again on the command line." />
+
+  </inputs>
+
+
+  <outputs>
+
+    <!-- single library output -->
+    <data format="tabular" name="ranks" from_work_dir="grinder-ranks.txt"   label="${tool.name} ranks from ${on_string}">
+      <filter>int(str(num_libraries)) == 1</filter>
+    </data>
+    <data format="fasta"   name="fasta" from_work_dir="grinder-reads.fa"    label="${tool.name} reads from ${on_string}">
+      <filter>int(str(num_libraries)) == 1 and fastq_output == 0</filter>
+    </data>
+    <data format="qual"    name="qual"  from_work_dir="grinder-reads.qual"  label="${tool.name} quals from ${on_string}">
+      <filter>int(str(num_libraries)) == 1 and str(qual_levels) and fastq_output == 0</filter>
+    </data>
+    <data format="fastqsanger" name="fastq" from_work_dir="grinder-reads.fastq" label="${tool.name} reads from ${on_string}">
+      <filter>int(str(num_libraries)) == 1 and fastq_output == 1</filter>
+    </data>
+
+    <!-- When Galaxy bug #670 is resolved, then we won't have to harcode the number of output datasets  -->
+    <!-- URL: https://bitbucket.org/galaxy/galaxy-central/issue/670/better-support-for-multiple-outputs -->
+
+    <!-- multiple libraries: library 1 -->
+    <data format="tabular" name="ranks1" from_work_dir="grinder-1-ranks.txt"   label="${tool.name} lib 1 ranks from ${on_string}">
+      <filter>int(str(num_libraries)) >= 2</filter>
+    </data>
+    <data format="fasta"   name="fasta1" from_work_dir="grinder-1-reads.fa"    label="${tool.name} lib 1 reads from ${on_string}">
+      <filter>int(str(num_libraries)) >= 2 and fastq_output == 0</filter>
+    </data>
+    <data format="qual"    name="qual1"  from_work_dir="grinder-1-reads.qual"  label="${tool.name} lib 1 quals from ${on_string}">
+      <filter>int(str(num_libraries)) >= 2 and str(qual_levels) and fastq_output == 0</filter>
+    </data>
+    <data format="fastqsanger" name="fastq1" from_work_dir="grinder-1-reads.fastq" label="${tool.name} lib 1 reads from ${on_string}">
+      <filter>int(str(num_libraries)) >= 2 and fastq_output == 1</filter>
+    </data>
+
+    <!-- multiple libraries: library 2 -->
+    <data format="tabular" name="ranks2" from_work_dir="grinder-2-ranks.txt"   label="${tool.name} lib 2 ranks from ${on_string}">
+      <filter>int(str(num_libraries)) >= 2</filter>
+    </data>
+    <data format="fasta"   name="fasta2" from_work_dir="grinder-2-reads.fa"    label="${tool.name} lib 2 reads from ${on_string}">
+      <filter>int(str(num_libraries)) >= 2 and fastq_output == 0</filter>
+    </data>
+    <data format="qual"    name="qual2"  from_work_dir="grinder-2-reads.qual"  label="${tool.name} lib 2 quals from ${on_string}">
+      <filter>int(str(num_libraries)) >= 2 and str(qual_levels) and fastq_output == 0</filter>
+    </data>
+    <data format="fastqsanger" name="fastq2" from_work_dir="grinder-2-reads.fastq" label="${tool.name} lib 2 reads from ${on_string}">
+      <filter>int(str(num_libraries)) >= 2 and fastq_output == 1</filter>
+    </data>
+
+    <!-- multiple libraries: library 3 -->
+    <data format="tabular" name="ranks3" from_work_dir="grinder-3-ranks.txt"   label="${tool.name} lib 3 ranks from ${on_string}">
+      <filter>int(str(num_libraries)) >= 3</filter>
+    </data>
+    <data format="fasta"   name="fasta3" from_work_dir="grinder-3-reads.fa"    label="${tool.name} lib 3 reads from ${on_string}">
+      <filter>int(str(num_libraries)) >= 3 and fastq_output == 0</filter>
+    </data>
+    <data format="qual"    name="qual3"  from_work_dir="grinder-3-reads.qual"  label="${tool.name} lib 3 quals from ${on_string}">
+      <filter>int(str(num_libraries)) >= 3 and str(qual_levels) and fastq_output == 0</filter>
+    </data>
+    <data format="fastqsanger" name="fastq3" from_work_dir="grinder-3-reads.fastq" label="${tool.name} lib 3 reads from ${on_string}">
+      <filter>int(str(num_libraries)) >= 3 and fastq_output == 1</filter>
+    </data>
+
+    <!-- multiple libraries: library 4 -->
+    <data format="tabular" name="ranks4" from_work_dir="grinder-4-ranks.txt"   label="${tool.name} lib 4 ranks from ${on_string}">
+      <filter>int(str(num_libraries)) >= 4</filter>
+    </data>
+    <data format="fasta"   name="fasta4" from_work_dir="grinder-4-reads.fa"    label="${tool.name} lib 4 reads from ${on_string}">
+      <filter>int(str(num_libraries)) >= 4 and fastq_output == 0</filter>
+    </data>
+    <data format="qual"    name="qual4"  from_work_dir="grinder-4-reads.qual"  label="${tool.name} lib 4 quals from ${on_string}">
+      <filter>int(str(num_libraries)) >= 4 and str(qual_levels) and fastq_output == 0</filter>
+    </data>
+    <data format="fastqsanger" name="fastq4" from_work_dir="grinder-4-reads.fastq" label="${tool.name} lib 4 reads from ${on_string}">
+      <filter>int(str(num_libraries)) >= 4 and fastq_output == 1</filter>
+    </data>
+
+    <!-- multiple libraries: library 5 -->
+    <data format="tabular" name="ranks5" from_work_dir="grinder-5-ranks.txt"   label="${tool.name} lib 5 ranks from ${on_string}">
+      <filter>int(str(num_libraries)) >= 5</filter>
+    </data>
+    <data format="fasta"   name="fasta5" from_work_dir="grinder-5-reads.fa"    label="${tool.name} lib 5 reads from ${on_string}">
+      <filter>int(str(num_libraries)) >= 5 and fastq_output == 0</filter>
+    </data>
+    <data format="qual"    name="qual5"  from_work_dir="grinder-5-reads.qual"  label="${tool.name} lib 5 quals from ${on_string}">
+      <filter>int(str(num_libraries)) >= 5 and str(qual_levels) and fastq_output == 0</filter>
+    </data>
+    <data format="fastqsanger" name="fastq5" from_work_dir="grinder-5-reads.fastq" label="${tool.name} lib 5 reads from ${on_string}">
+      <filter>int(str(num_libraries)) >= 5 and fastq_output == 1</filter>
+    </data>
+
+    <!-- multiple libraries: library 6 -->
+    <data format="tabular" name="ranks6" from_work_dir="grinder-6-ranks.txt"   label="${tool.name} lib 6 ranks from ${on_string}">
+      <filter>int(str(num_libraries)) >= 6</filter>
+    </data>
+    <data format="fasta"   name="fasta6" from_work_dir="grinder-6-reads.fa"    label="${tool.name} lib 6 reads from ${on_string}">
+      <filter>int(str(num_libraries)) >= 6 and fastq_output == 0</filter>
+    </data>
+    <data format="qual"    name="qual6"  from_work_dir="grinder-6-reads.qual"  label="${tool.name} lib 6 quals from ${on_string}">
+      <filter>int(str(num_libraries)) >= 6 and str(qual_levels) and fastq_output == 0</filter>
+    </data>
+    <data format="fastqsanger" name="fastq6" from_work_dir="grinder-6-reads.fastq" label="${tool.name} lib 6 reads from ${on_string}">
+      <filter>int(str(num_libraries)) >= 6 and fastq_output == 1</filter>
+    </data>
+
+    <!-- multiple libraries: library 7 -->
+    <data format="tabular" name="ranks7" from_work_dir="grinder-7-ranks.txt"   label="${tool.name} lib 7 ranks from ${on_string}">
+      <filter>int(str(num_libraries)) >= 7</filter>
+    </data>
+    <data format="fasta"   name="fasta7" from_work_dir="grinder-7-reads.fa"    label="${tool.name} lib 7 reads from ${on_string}">
+      <filter>int(str(num_libraries)) >= 7 and fastq_output == 0</filter>
+    </data>
+    <data format="qual"    name="qual7"  from_work_dir="grinder-7-reads.qual"  label="${tool.name} lib 7 quals from ${on_string}">
+      <filter>int(str(num_libraries)) >= 7 and str(qual_levels) and fastq_output == 0</filter>
+    </data>
+    <data format="fastqsanger" name="fastq7" from_work_dir="grinder-7-reads.fastq" label="${tool.name} lib 7 reads from ${on_string}">
+      <filter>int(str(num_libraries)) >= 7 and fastq_output == 1</filter>
+    </data>
+
+    <!-- multiple libraries: library 8 -->
+    <data format="tabular" name="ranks8" from_work_dir="grinder-8-ranks.txt"   label="${tool.name} lib 8 ranks from ${on_string}">
+      <filter>int(str(num_libraries)) >= 8</filter>
+    </data>
+    <data format="fasta"   name="fasta8" from_work_dir="grinder-8-reads.fa"    label="${tool.name} lib 8 reads from ${on_string}">
+      <filter>int(str(num_libraries)) >= 8 and fastq_output == 0</filter>
+    </data>
+    <data format="qual"    name="qual8"  from_work_dir="grinder-8-reads.qual"  label="${tool.name} lib 8 quals from ${on_string}">
+      <filter>int(str(num_libraries)) >= 8 and str(qual_levels) and fastq_output == 0</filter>
+    </data>
+    <data format="fastqsanger" name="fastq8" from_work_dir="grinder-8-reads.fastq" label="${tool.name} lib 8 reads from ${on_string}">
+      <filter>int(str(num_libraries)) >= 8 and fastq_output == 1</filter>
+    </data>
+
+    <!-- multiple libraries: library 9 -->
+    <data format="tabular" name="ranks9" from_work_dir="grinder-9-ranks.txt"   label="${tool.name} lib 9 ranks from ${on_string}">
+      <filter>int(str(num_libraries)) >= 9</filter>
+    </data>
+    <data format="fasta"   name="fasta9" from_work_dir="grinder-9-reads.fa"    label="${tool.name} lib 9 reads from ${on_string}">
+      <filter>int(str(num_libraries)) >= 9 and fastq_output == 0</filter>
+    </data>
+    <data format="qual"    name="qual9"  from_work_dir="grinder-9-reads.qual"  label="${tool.name} lib 9 quals from ${on_string}">
+      <filter>int(str(num_libraries)) >= 9 and str(qual_levels) and fastq_output == 0</filter>
+    </data>
+    <data format="fastqsanger" name="fastq9" from_work_dir="grinder-9-reads.fastq" label="${tool.name} lib 9 reads from ${on_string}">
+      <filter>int(str(num_libraries)) >= 9 and fastq_output == 1</filter>
+    </data>
+
+    <!-- multiple libraries: library 10 -->
+    <data format="tabular" name="ranks10" from_work_dir="grinder-10-ranks.txt"   label="${tool.name} lib 10 ranks from ${on_string}">
+      <filter>int(str(num_libraries)) >= 10</filter>
+    </data>
+    <data format="fasta"   name="fasta10" from_work_dir="grinder-10-reads.fa"    label="${tool.name} lib 10 reads from ${on_string}">
+      <filter>int(str(num_libraries)) >= 10 and fastq_output == 0</filter>
+    </data>
+    <data format="qual"    name="qual10"  from_work_dir="grinder-10-reads.qual"  label="${tool.name} lib 10 quals from ${on_string}">
+      <filter>int(str(num_libraries)) >= 10 and str(qual_levels) and fastq_output == 0</filter>
+    </data>
+    <data format="fastqsanger" name="fastq10" from_work_dir="grinder-10-reads.fastq" label="${tool.name} lib 10 reads from ${on_string}">
+      <filter>int(str(num_libraries)) >= 10 and fastq_output == 1</filter>
+    </data>
+
+  </outputs>
+
+  <tests>
+    <!-- no tests since they would not not always return the same results -->
+    <!--
+    <test>
+      <param name="specify" value="uploaded" />
+      <param name="value" value="ngs_simulation_in1.fasta" ftype="fasta" />
+      <output name="ranks" file="" />
+      <output name="fasta" file="" />
+      <output name="qual" file="" />
+    </test>
+
+    <test>
+      <param name="specify" value="builtin" />
+      <param name="builtin" value="pUC18" />
+      <output name="ranks" file="" />
+      <output name="fasta" file="" />
+      <output name="qual" file="" />
+    </test>
+    -->
+  </tests>
+
+  <help>
+
+**What it does**
+
+Grinder is a program to create random shotgun and amplicon sequence libraries
+based on reference sequences in a FASTA file. Features include:
+
+  * omic support: genomic, metagenomic, transcriptomic, metatranscriptomic,
+      proteomic and metaproteomic
+  * shotgun library or amplicon library
+  * arbitrary read length distribution and number of reads
+  * simulation of PCR and sequencing errors (chimeras, point mutations, homopolymers)
+  * support for creating paired-end (mate pair) datasets
+  * specific rank-abundance settings or manually given abundance for each genome
+  * creation of datasets with a given richness (alpha diversity)
+  * independent datasets can share a variable number of genomes (beta diversity)
+  * modeling of the bias created by varying genome lengths or gene copy number
+  * profile mechanism to store preferred options
+  * API to automate the creation of a large number of simulated datasets
+
+
+**Input**
+
+A variety of FASTA databases containing genes or genomes can be used as input
+for Grinder, such as the NCBI RefSeq collection (ftp://ftp.ncbi.nih.gov/refseq/release/microbial/),
+the GreenGenes 16S rRNA database (http://greengenes.lbl.gov/Download/Sequence_Data/Fasta_data_files/Isolated_named_strains_16S_aligned.fasta), the human genome and transcriptome (ftp://ftp.ncbi.nih.gov/refseq/H_sapiens/RefSeqGene/, ftp://ftp.ncbi.nih.gov/refseq/H_sapiens/mRNA_Prot/human.rna.fna.gz), ...
+
+These input files can either be provided as a Galaxy dataset, or can be uploaded
+by Galaxy users in their history.
+ 
+
+**Output**
+
+For each library requested, a first file contains the abundance of the species
+in the simulated community created, e.g.::
+
+  # rank  seqID                           rel. abundance
+  1       86715_Lachnospiraceae           0.367936925098555 
+  2       6439_Neisseria_polysaccharea    0.183968462549277 
+  3       103712_Fusobacterium_nucleatum  0.122645641699518 
+  4       103024_Frigoribacterium         0.0919842312746386 
+  5       129066_Streptococcus_pyogenes   0.0735873850197109 
+  6       106485_Pseudomonas_aeruginosa   0.0613228208497591 
+  7       13824_Veillonella_criceti       0.0525624178712221 
+  8       28044_Lactosphaera              0.0459921156373193 
+
+The second file is a FASTA file containing shotgun or amplicon reads, e.g.::
+
+  >1 reference=13824_Veillonella_criceti position=89-1088 strand=+
+  ACCAACCTGCCCTTCAGAGGGGGATAACAACGGGAAACCGTTGCTAATACCGCGTACGAA
+  TGGACTTCGGCATCGGAGTTCATTGAAAGGTGGCCTCTATTTATAAGCTATCGCTGAAGG
+  AGGGGGTTGCGTCTGATTAGCTAGTTGGAGGGGTAATGGCCCACCAAGGCAA
+
+  >2 reference=103712_Fusobacterium_nucleatum position=2-1001 strand=+
+  TGAACGAAGAGTTTGATCCTGGCTCAGGATGAACGCTGACAGAATGCTTAACACATGCAA
+  GTCAACTTGAATTTGGGTTTTTAACTTAGGTTTGGG
+
+If you specify the quality score levels option, a third file representing the
+quality scores of the reads is created::
+
+  >1 reference=103712_Fusobacterium_nucleatum position=2-1001 strand=+
+  30 30 30 10 30 30 ...
+
+
+  </help>
+
+</tool>
+

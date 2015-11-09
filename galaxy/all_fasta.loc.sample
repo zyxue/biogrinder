@@ -1,0 +1,15 @@
+#This file lists the locations and dbkeys of all the fasta files
+#under the "genome" directory (a directory that contains a directory
+#for each build). The script extract_fasta.py will generate the file
+#all_fasta.loc.
+#IMPORTANT: EACH LINE OF THIS FILE HAS TO BE TAB-DELIMITED!
+#
+#<unique_build_id>   <dbkey>   <display_name>   <file_path>
+#
+#So, all_fasta.loc could look something like this:
+#
+#ncbi_refseq_complete_viruses	ncbi_refseq_complete_viruses	RefSeq complete viruses	/path/to/ncbi_refseq_complete_viruses.fna
+#ncbi_refseq_complete_microbes	ncbi_refseq_complete_microbes	RefSeq complete microbes	/path/to/ncbi_refseq_complete_microbes.fna
+#homo_sapiens_GRCh37	homo_sapiens_GRCh37	Homo sapiens genome	/path/to/Homo_sapiens_GRCh37_reference.fna
+#gg_named_16S	gg_named_16S	GreenGenes named 16S strains	/path/to/Isolated_named_strains_16S.fna
+

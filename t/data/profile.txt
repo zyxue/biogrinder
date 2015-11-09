@@ -1,0 +1,14 @@
+
+# The profile file first
+-reference_file t/data/single_seq_database.fa
+	
+  
+ # Now some read length specification
+-read_dist 50
+
+-total_reads 100 -unidirectional 1
+
+
+
+
+

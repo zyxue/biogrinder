@@ -1,0 +1,6 @@
+# Abundance file
+seq1 25
+seq2 25
+ 
+seq4 25
+seq5 25

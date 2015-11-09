@@ -1,0 +1,177 @@
+#! /usr/bin/env perl
+
+# This file is part of the Grinder package, copyright 2009-2012
+# Florent Angly <florent.angly@gmail.com>, under the GPLv3 license
+
+
+=head1 NAME
+
+average_genome_size - Calculate the average genome size (in bp) of species in a Grinder library
+
+=head1 DESCRIPTION
+
+Calculate the average genome size (in bp) of species in a Grinder library given
+the library composition and the full-genomes used to produce it.
+
+=head1 REQUIRED ARGUMENTS
+
+=over
+
+=item <db_fasta>
+
+FASTA file containing the full-genomes used to produce the Grinder library.
+
+=for Euclid:
+   db_fasta.type: readable
+
+=item <rank_file>
+
+Grinder rank file that describes the library composition.
+
+=for Euclid:
+   rank_file.type: readable
+
+=back
+
+=head1 COPYRIGHT
+
+Copyright 2009-2012 Florent ANGLY <florent.angly@gmail.com>
+
+Grinder is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License (GPL) as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+Grinder is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+You should have received a copy of the GNU General Public License
+along with Grinder.  If not, see <http://www.gnu.org/licenses/>.
+
+=head1 BUGS
+
+All complex software has bugs lurking in it, and this program is no exception.
+If you find a bug, please report it on the SourceForge Tracker for Grinder:
+L<http://sourceforge.net/tracker/?group_id=244196&atid=1124737>
+
+Bug reports, suggestions and patches are welcome. Grinder's code is developed
+on Sourceforge (L<http://sourceforge.net/scm/?type=git&group_id=244196>) and is
+under Git revision control. To get started with a patch, do:
+
+   git clone git://biogrinder.git.sourceforge.net/gitroot/biogrinder/biogrinder
+
+=cut
+
+
+use strict;
+use warnings;
+use Getopt::Euclid qw( :minimal_keys );
+average_genome_size($ARGV{'db_fasta'}, $ARGV{'rank_file'});
+exit;
+
+
+sub average_genome_size {
+  my ( $db_fasta, $rank_file ) = @_;   
+  # Calculate the average genome size of a Grinder simulated random library
+  # Read size of the genomes
+  my ($gen_size) = get_sequence_size($db_fasta);
+  my $nof_gens = scalar(keys(%$gen_size));
+  # Read relative abundance of the genomes
+  my $gen_rel_ab = read_rel_ab($rank_file);
+  # Calculate average
+  my ($avg_gen_size, $gen_size_stdev, $gen_size_stderr)
+    = avg_genome_size($gen_rel_ab, $gen_size, $nof_gens);
+  # Display results
+  print "$avg_gen_size bp\n";
+  return 1;
+}
+
+
+sub get_sequence_size {
+  # Get the size of sequences in a FASTA file
+  # Input: path to FASTA file containing metagenomic sequences
+  # Output: hashref of sequence sizes indexed by sequence ID,
+  #         number of nucleotides,
+  #         length of smallest sequence
+  #         hashref of sequence names indexed by sequence ID
+  my $fasta = shift;
+  my ($sizes, $nof_bp, $min_length, $names) = ({}, 0, undef, {});
+  my ($id, $name, $length) = (undef, '', 0);
+  if (not -f $fasta) {
+    die "Error: '$fasta' does not seem to be a valid file\n";
+  }
+  open(FASTAIN, $fasta) || die("Error: could not read file '$fasta': $!");
+  while (my $line = <FASTAIN>) {
+    chomp $line;
+    if ($line =~ m/^>(\S+)\s*(.*)$/) {
+      # Save old sequence, start new sequence
+      $id && _save_seq($sizes,\$nof_bp,\$min_length,$names,$id,$name,$length);
+      ($id, $name, $length) = ($1, $2, 0);
+    } elsif ($line =~ m/^\s*$/) { # Line to ignore
+      next;
+    } else { # Continuation of current sequence
+      $length += length($line);
+    }
+  }
+  # Save last sequence
+  $id && _save_seq($sizes,\$nof_bp,\$min_length,$names,$id,$name,$length);
+  close FASTAIN;
+  return $sizes, $nof_bp, $min_length, $names;
+
+  sub _save_seq {
+    my ($sizes, $nof_bp, $min_length, $names, $id, $name, $length) = @_;
+    $$sizes{$id} = $length;
+    $$nof_bp += $length;
+    $$min_length = $length if ((!defined $$min_length)||($length<$$min_length));
+    $$names{$id} = $name;
+  }
+}
+
+
+sub read_rel_ab {
+  my $rank_file = shift;
+  open(IN, $rank_file) || die("Could not read file '$rank_file': $!");
+  my %rel_ab;
+  for my $line (<IN>) {
+    if ($line =~ m/^#/) {
+      # Comment line to ignore
+      next;
+    #} elsif ($line =~ m/^(\S+)\s+(\S+)\s+(\S+)$/) {
+    } elsif ($line =~ m/^(.+)\t(.+)\t(.+)$/) {
+      # Data to keep
+      my $rank = $1;
+      my $id = $2;
+      my $ab = $3/100; # between 0 and 1
+      $rel_ab{$id} = $ab;
+    } else {
+      # Unknown format to ignore
+      warn "Skipping unknown line format:\n$line";
+      next;
+    }
+  }
+  close IN;
+  return \%rel_ab;
+}
+
+
+sub avg_genome_size {
+  my ($gen_rel_ab, $gen_size, $nof_gens) = @_;
+  #my ($spectrum, $nof_hits) = @_;
+  my $avg    = 0;
+  my $stdev  = 0;
+  my $stderr = 0;
+  for my $genome (keys %$gen_size) {
+    my $size = $$gen_size{$genome};
+    my $ab   = $$gen_rel_ab{$genome};
+    next if not defined $ab;
+    my $tmp = $ab * $size;
+    $avg += $tmp;
+    $stdev += $tmp * $size;
+  }
+  $stdev = sqrt($stdev - $avg**2); # sigma = sqrt( E(X^2) - E(X)^2 )
+  $stderr = $stdev;
+  $stdev /= sqrt($nof_gens) unless ($nof_gens == 0);
+  return $avg, $stdev, $stderr;
+}
+
+

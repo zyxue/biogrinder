@@ -1,0 +1,88 @@
+#! /usr/bin/env perl
+
+# This file is part of the Grinder package, copyright 2009-2012
+# Florent Angly <florent.angly@gmail.com>, under the GPLv3 license
+
+
+=head1 NAME
+
+change_paired_read_orientation - Change the orientation of paired-end reads in a
+FASTA file
+
+=head1 DESCRIPTION
+
+Reverse the orientation, i.e. reverse-complement each right-hand paired-end read
+(ID ending in /2) in a FASTA file.
+
+=head1 REQUIRED ARGUMENTS
+
+=over
+
+=item <in_fasta>
+
+FASTA file containing the reads to re-orient.
+
+=for Euclid:
+   in_fasta.type: readable
+
+=item <out_fasta>
+
+Output FASTA file where to write the reads.
+
+=for Euclid:
+   out_fasta.type: writable
+
+=back
+
+=head1 COPYRIGHT
+
+Copyright 2009-2012 Florent ANGLY <florent.angly@gmail.com>
+
+Grinder is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License (GPL) as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+Grinder is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+You should have received a copy of the GNU General Public License
+along with Grinder.  If not, see <http://www.gnu.org/licenses/>.
+
+=head1 BUGS
+
+All complex software has bugs lurking in it, and this program is no exception.
+If you find a bug, please report it on the SourceForge Tracker for Grinder:
+L<http://sourceforge.net/tracker/?group_id=244196&atid=1124737>
+
+Bug reports, suggestions and patches are welcome. Grinder's code is developed
+on Sourceforge (L<http://sourceforge.net/scm/?type=git&group_id=244196>) and is
+under Git revision control. To get started with a patch, do:
+
+   git clone git://biogrinder.git.sourceforge.net/gitroot/biogrinder/biogrinder
+
+=cut
+
+
+use strict;
+use warnings;
+use Getopt::Euclid qw( :minimal_keys );
+use Bio::SeqIO;
+change_paired_read_orientation($ARGV{'in_fasta'}, $ARGV{'out_fasta'});
+exit;
+
+
+sub change_paired_read_orientation {
+   my ($in_fasta, $out_fasta) = @_;
+   my $in  = Bio::SeqIO->new( -file => "<$in_fasta" , -format => 'fasta' );
+   my $out = Bio::SeqIO->new( -file => ">$out_fasta", -format => 'fasta' );
+   while ( my $seq = $in->next_seq ) {
+      if ($seq->id =~ m#/2$#) {
+         $seq = $seq->revcom;
+      }
+      $out->write_seq($seq);
+   }
+   $in->close;
+   $out->close;
+   return 1;
+}

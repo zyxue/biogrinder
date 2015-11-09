@@ -1,0 +1,284 @@
+Revision history for Grinder
+
+0.5.3   30-May-2013
+        Completed fix for bug #6, multiplexed read close to length of reference
+           (reported by Ali May).
+        When generating multiple libraries, default is now to use 100% permuted
+           to have dissimilar communities (consistent with 0% shared as default).
+
+0.5.2   26-Apr-2013
+        Fixed bug causing reads too short when using MIDs and asking for a read
+           length close to that of their reference (bug #6, reported by Ali May).
+
+0.5.1   19-Apr-2013
+        Fixed bug preventing the insertion of very low frequency sequencing
+           errors (bug #5).
+        Updated average_genome_size script to use percentage in Grinder rank
+           file instead of fractional numbers.
+
+0.5.0   14-Jan-2013
+        Removed the =encoding statement which was breaking Pod::PlainText
+           (reported by Lauren Bragg)
+        Precompile <exclude_chars> regular expression
+
+0.4.9   20-Nov-2012
+        Significant speedup by using improved version of Bioperl modules
+          (reported by Ben Woodcroft).
+        Fixed bug in RF and FR -oriented mates produced from the reverse-
+          complement of the reference sequence (reported by Mike Imelfort).
+        Mate orientation documented for IonTorrent (reported by Mike Imelfort).
+        The relative abundances reported by Grinder in the rank file are now
+          expressed as percentage instead of fractional for consistency.
+        Updated dependencies to satisfy older Perl (reported by Stephen Turner).
+        Build the documentation on author-side, not user side (reported by
+          Stephen Turner).
+
+0.4.8   10-Oct-2012
+        Fixed bug when making amplicon reads using specified relative abundances
+          based on genomes with multiple amplicons (reported by Bertrand Bonnaud).
+        Usage message improvements (reported by Xiao Yang).
+        Delegated some operations to dedicated modules.
+
+0.4.7   27-May-2012
+        Requiring Math::Random::MT version 1.14 should fix issues that Windows
+          users are having (reported by David Koslicki).
+
+0.4.6   27-May-2012
+        When generating kmer-based chimeras, save resources by only calculating
+          the kmers of the reference sequences that are going to be used
+          (improvement suggested by David Koslicki).
+        Fixed an "undefined value" error when using kmer-based chimeras
+          (reported by David Koslicki).
+        Fixed an error when using kmer-based chimeras but not using all the
+          reference sequences (reported by David Koslicki).
+
+0.4.5   27-Jan-2012   
+        Fixed bug when adding mutations linearly to a 1 bp read (reported by
+          Robert Schmieder).
+        Better handling of 0 bp reference sequences.
+        Fixed bug when looking for amplicons on the reverse complement of a
+          reference sequence.
+        Properly remove the shortest of two amplicons, even if they are on
+          different strands.
+
+0.4.4   20-Jan-2012
+        Dependencies update: no need for Math::Random::MT::Perl anymore.
+
+0.4.3   18-Jan-2012
+        Implemented multimeras, i.e. chimeras from more than two reference
+          sequences (suggested by anonymous reviewer). See <chimera_dist>.
+        Implemented chimeras where the breakpoints correspond to k-mers shared
+          by the reference sequences (suggested by anonymous reviewer). See
+          <chimera_kmer>.
+
+0.4.2   15-Dec-2011
+        Fixed incorrectly calculated relative abundances when using length bias
+          (reported by Mike Imelfort and Mohamed Fauzi Haroon).
+
+0.4.1   25-Nov-2011
+        The keyword 'strand' is not used anymore in the description of reads.
+        Read coordinates are now reported like in the Genbank format:
+          "position=complement(1..20)" instead of "position=1-20 strand=-1"
+        Fixed bug reported by Dana Willner: when looking for full-length amplicon
+          matches based on PCR primers, matches are now sought in the reference
+          sequences but also in their reverse-complement
+        Better handling of discrepancies between the number of libraries specified
+          with the num_libraries option and in the abundance_file (reported by
+          Dana Willner).
+
+0.4.0   04-Nov-2011
+        Support for DNA, RNA and proteic reference sequences to produce genomic
+          metagenomic, transcriptomic, metatranscriptomic, proteomic and
+          metaproteomic datasets
+        New error model suitable to simulate Illumina reads: 4th degree polynome
+        Change in error model (mutation_distribution) parameter:
+          - general syntax is now model_name, model_parameters...
+          - the first parameter for the linear model is now the error rate at the
+            3' end of the reads, not the average error rate
+        Speed improvement for position-specific error models
+        Galaxy GUI fix so that the output is fastqsanger, not just fastq
+        The reference_file parameter is now a required argument, so that running
+          grinder without arguments displays the help (reported by Robert Schmieder)
+        Fixed a bug that caused a crash when using an indel model and a homopolymer
+          model simultaneously (reported by Robert Schmieder)
+        Information displayed on screen now reports whether the library is a
+          shotgun or amplicon library
+
+0.3.9   18-Oct-2011   
+        New option <mate_orientation> to select orientation of mate pairs
+        New default for mate orientation: forward-reverse instead of forward-forward
+        Handle empty reference sequence description more gracefully
+        Galaxy GUI compatible with workflows and new tool shed
+
+0.3.8   04-Oct-2011
+        Graphical interface for the Galaxy project
+        Support for writing the output reads in FASTQ format (Sanger variant)
+        Support for nested and overlapping amplicons
+        Tests do not fail if the optional dependency Statistics::R is not installed
+        Tested that Grinder works 100% on Windows
+        Generating 100 reads by default instead of coverage 0.1x
+        Fixed bug where read description was not created if unidirectional was set to -1
+
+0.3.7   13-Sep-2011
+        Fixed bug in richter and margulies homopolymer error models
+        Fixed bug so that output rank file now collapses amplicon by species
+        The Grinder CLI script is now called 'grinder' (all lowercase)
+        Option mutation_ratio has changed so that it is possible to specify indels without substitutions
+        Location of amplicon relative to the reference sequence is now recorded
+          in the read description using the 'amplicon' field
+        Better reporting of chimeras in read descriptions using a comma-separated
+          list for the 'amplicon' and 'reference' field
+        Redundant sequencing errors (multiple errors at the same position) are
+          now tracked in read descriptions
+        New dependency: using Math::Random::MT Perl module for added speed
+        Improved build and test mechanics
+        Added tests for chimeras, indels, substitutions and homopolymers
+        More comprehensive tests for seeding and random number generation
+
+0.3.6   03-Aug-2011
+        Support for reference sequences that contain several amplicons
+        Implemented a gene copy bias option for amplicon libraries
+        Primers can now match RNA sequences or ambiguous residues of the reference
+           sequence 
+        Automatic community structure parameter value picking when none is provided
+        Fixed uniform insert and read length distribution
+        Fixed quality scores, which were generated but never written to disk
+        Write on screen when QUAL files are generated
+        Added links to example databases that users can use as Grinder input
+        Specified the URL where to report bugs
+        More unit tests: community structure, read and insert length distributions
+           amplicons with specified genome abundance
+
+0.3.5   21-Jul-2011
+        Implemented a profile mechanisms to store user's preferred options
+        Added a script to reverse the orientation of right-hand mates
+        Fixed issues with reads with MIDs (in Bio::Seq::SimulatedRead)
+        Library number in ID of first sequence in libraries with even number was
+          wrong when mate pair was used
+        Number of the pair in mate pair IDs was wrong
+        Grinder development put under Git versioning control on SourceForge
+        More unit tests
+        Versioning fix
+
+0.3.4   23-Jun-2011
+        New option to generate basic quality scores if desired (-qual_levels)
+        New option to not track the read info in the read description (-desc_track)
+        Objects returned by Grinder are now Bio::Seq::SimulatedRead Bioperl objects
+        Double-quotes in read description are now escaped, i.e. '"' becomes '\"'
+        Now using 'reference' instead of 'source' in read tracking description
+        Changes in the defaults:
+          uniform community structure instead of power law
+          uniform read distribution instead of normally distributed
+
+0.3.3   03-Mar-2011
+        New option to sequence from the reverse strand: see <unidirectional>
+          (suggested by Barry Cayford).
+        Output FASTA files now named *reads* instead of *shotgun* because
+          libraries can be amplicon too.
+        Output file names now use numbers padded with zeroes so that, e.g. if
+          123 libraries were requested, their name is in 001, 002 ... 123.
+        Output folder is now created automatically if it does not already exist.
+        The next_read() method now returns only one read, even for mate pairs.
+        Force the alphabet to DNA when reading the primer sequence file since
+          degenerate primers can look like protein sequences.
+        Fixed bug where Grinder sometimes created libraries even though there
+          were not enough sequences to do it safely (reported by Dana Willner).
+        When the number of reads to generate is smaller than the required
+          diversity, the actual diversity reported reflects this now.
+        Not reporting errors "Not enough sequences for chimera..." when there is
+          less than 2 reads and chimera_perc is 0.
+        Fixed bug in argument processing by Getopt::Euclid that affected
+          repeated calls to the new() method.
+        Fixed calculation of number of genomes shared. Clearly specified in the
+          documentation that the percent shared is relative to the diversity of
+          the least abundant library (reported by Dana Willner).
+        Fixed calculation of the total library diversity.
+        Many more Grinder test cases.
+
+0.3.2   11-Feb-2011
+        New feature to specify specific characters to delete (N, -, ...) (suggested by Mike Imelfort)
+        New method to retrieve the seed number used for the computation: $factory->get_random_seed
+        When excluding specific characters, an amplicon read is attempted only once now
+        More robust parsing of abundance file
+        It is now a fatal error if sequences requested in an abundance file are
+          not found in the genome file
+        Small optimizations
+
+0.3.1   08-Feb-2011
+        Support for making multiple libraries with different richness (diversity) values
+        Fixed bug for communities with specified relative abundances (reported by Mike Imelfort)
+        Better error messages for sequences that have a specified abundance
+
+0.3.0   12-Jan-2011
+        Command-line arguments have changed; all have a short and long version
+        Grinder API to allow to run Grinder inside Perl programs
+        Support for amplicon sequencing
+        For amplicon simulation, a forward and optional reverse primer (in IUPAC) can be specified
+        Amplicon can be given multiplex identifiers (MIDs)
+        Support for a generating chimeras
+        Homopolymer error simulation
+        More error models for point mutations (uniform and linear)
+        Read error tracking in the sequence description
+        New default is to produce reads with no errors
+        New FASTA read description that specifies its source, position, strand, description and errors
+        Option to take shotgun reads from reverse complement
+        Support for specifying the structure of several communities manually
+        Speed improvements
+
+0.2.0   22-Sep-2010
+        New options available when generating multiple shotgun libraries. Alpha
+        and beta diversity can be specified:
+          * richness
+          * percentage of genomes shared between libraries
+          * percentage of the top genomes with a different abundance rank
+        Revised way that mate pair reads are named. Example:
+          >1000/1 seq3|31-60
+          >1000/2 seq3|41-70
+        Added utility to calculate average genome length from Grinder rank file
+
+0.1.9   24-Jun-2010
+        Thanks to Ramsi Temanni for his suggestions and feedback regarding forbidden characters.
+        Support for characters forbidden in the shotgun reads
+        Little bugfix regarding default values for arguments that take a list of values
+
+0.1.8   22-Apr-2010
+        Thanks to Albert Villela for his suggestions and feedback regarding paired reads.
+        Changes in command-line options to accomodate new features
+        Support for inputting a file specifying the abundance of the different genomes
+        Support for mate pairs / paired end reads
+        Support for uniform or normal distribution of read lengths and mate pair
+          insert lengths
+        Fixed bug causing an error when the number of reads in the input file
+          cannot be divided by the number of independent libraries required
+        Changed output sequence ID to a more consistent scheme
+
+0.1.7   15-Feb-2010
+        Not keeping the sequences in memory anymore to preserve resources 
+        Really using the Math::Random::MT::Perl seeding facility
+
+0.1.6   07-Dec-2009
+        Now using the Math::Random::MT::Perl seeding facility
+
+0.1.5   24-Feb-2009
+        Grinder now has a proper installer (Perl module style)
+
+0.1.4
+        Added basic report on libraries produced
+        Fixed bug in number of sequences created when using independent libraries
+
+0.1.3
+        Ability to generate several random shotgun libraries at once that do not
+          contain any genome in common
+
+0.1.2
+        Correction in the code to generate mutations
+        Changed the defaults to use a powerlaw model and the size-dependent option
+        The main module function now returns a hashref of rank-abundances
+
+0.1.1
+        Introduction of the simulation of sequencing errors (substitutions and indels)
+        Modified the way the random number generation is handled
+        The main module function now returns an arrayref of Bio::Seq objects
+
+0.1.0
+        Initial release
