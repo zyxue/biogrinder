@@ -1,3 +1,7 @@
+*This is a copy from
+http://sourceforge.net/projects/biogrinder/files/biogrinder/Grinder-0.5.3/Grinder-0.5.3.tar.gz
+with better formatted README, no source code has been changed.*
+
 <!-- it's odd that in the table of contents that some words need to be
 connected with dash while others with underscore in order to make linking work
 when rendered on github page -->
