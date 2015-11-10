@@ -1,35 +1,32 @@
-<div name="index">
+<!-- it's odd that in the table of contents that some words need to be
+connected with dash while others with underscore in order to make linking work
+when rendered on github page -->
 
-[NAME](#name)
-[DESCRIPTION](#description)
-[CITATION](#citation)
-[VERSION](#version)
-[AUTHOR](#author)
-[INSTALLATION](#installation)
--   [Dependencies](#dependencies)
--   [Procedure](#procedure)
--   [No administrator privileges?](#no_administrator_privileges)
-
-[RUNNING GRINDER](#running_grinder)
-[REFERENCE SEQUENCE DATABASE](#reference_sequence_database)
-[CLI EXAMPLES](#cli_examples)
-[CLI REQUIRED ARGUMENTS](#cli_required_arguments)
-[CLI OPTIONAL ARGUMENTS](#cli_optional_arguments)
-[CLI OUTPUT](#cli_output)
-[API EXAMPLES](#api_examples)
-[API METHODS](#api_methods)
--   [new](#new)
--   [next\_lib](#next_lib)
--   [next\_read](#next_read)
--   [get\_random\_seed](#get_random_seed)
-
-[COPYRIGHT](#copyright)
-[BUGS](#bugs)
+1. [NAME](#name)
+2. [DESCRIPTION](#description)
+3. [CITATION](#citation)
+4. [VERSION](#version)
+5. [AUTHOR](#author)
+6. [INSTALLATION](#installation)
+	1. [Dependencies](#dependencies)
+	2. [Procedure](#procedure)
+	3. [No administrator privileges?](#no-administrator-privileges)
+7. [RUNNING GRINDER](#running-grinder)
+8. [REFERENCE SEQUENCE DATABASE](#reference-sequence-database)
+9. [CLI EXAMPLES](#cli-examples)
+10. [CLI REQUIRED ARGUMENTS](#cli-required-arguments)
+11. [CLI OPTIONAL ARGUMENTS](#cli-optional-arguments)
+12. [CLI OUTPUT](#cli-output)
+13. [API EXAMPLES](#api-examples)
+14. [API METHODS](#api-methods)
+	1. [new](#new)
+	2. [next\_lib](#next_lib)
+	3. [next\_read](#next_read)
+	4. [get\_random\_seed](#get_random_seed)
+15. [COPYRIGHT](#copyright)
+16. [BUGS](#bugs)
 
 ------------------------------------------------------------------------
-
-</div>
-
 NAME
 ====
 
