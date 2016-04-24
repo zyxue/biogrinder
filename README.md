@@ -7,40 +7,35 @@ connected with dash while others with underscore in order to make linking work
 when rendered on github page -->
 
 1. [NAME](#name)
-2. [DESCRIPTION](#description)
-3. [CITATION](#citation)
-4. [VERSION](#version)
-5. [AUTHOR](#author)
-6. [INSTALLATION](#installation)
-	1. [Dependencies](#dependencies)
-	2. [Procedure](#procedure)
-	3. [No administrator privileges?](#no-administrator-privileges)
-7. [RUNNING GRINDER](#running-grinder)
-8. [REFERENCE SEQUENCE DATABASE](#reference-sequence-database)
-9. [CLI EXAMPLES](#cli-examples)
-10. [CLI REQUIRED ARGUMENTS](#cli-required-arguments)
-11. [CLI OPTIONAL ARGUMENTS](#cli-optional-arguments)
-12. [CLI OUTPUT](#cli-output)
-13. [API EXAMPLES](#api-examples)
-14. [API METHODS](#api-methods)
-	1. [new](#new)
-	2. [next\_lib](#next_lib)
-	3. [next\_read](#next_read)
-	4. [get\_random\_seed](#get_random_seed)
-15. [COPYRIGHT](#copyright)
-16. [BUGS](#bugs)
+1. [DESCRIPTION](#description)
+1. [CITATION](#citation)
+1. [VERSION](#version)
+1. [AUTHOR](#author)
+1. [INSTALLATION](#installation)
+   1. [Dependencies](#dependencies)
+   1. [Procedure](#procedure)
+   1. [No administrator privileges?](#no-administrator-privileges)
+1. [RUNNING GRINDER](#running-grinder)
+1. [REFERENCE SEQUENCE DATABASE](#reference-sequence-database)
+1. [CLI EXAMPLES](#cli-examples)
+1. [CLI REQUIRED ARGUMENTS](#cli-required-arguments)
+1. [CLI OPTIONAL ARGUMENTS](#cli-optional-arguments)
+1. [CLI OUTPUT](#cli-output)
+1. [API EXAMPLES](#api-examples)
+1. [API METHODS](#api-methods)
+   1. [new](#new)
+   1. [next\_lib](#next_lib)
+   1. [next\_read](#next_read)
+   1. [get\_random\_seed](#get_random_seed)
+1. [COPYRIGHT](#copyright)
+1. [BUGS](#bugs)
 
-------------------------------------------------------------------------
-NAME
-====
+## Name
 
-grinder - A versatile omics shotgun and amplicon sequencing read
+Grinder - A versatile omics shotgun and amplicon sequencing read
 simulator
 
-------------------------------------------------------------------------
-
-DESCRIPTION
-===========
+## Description
 
 Grinder is a versatile program to create random shotgun and amplicon
 sequence libraries based on DNA, RNA or proteic reference sequences
@@ -58,340 +53,279 @@ how many reads should be sequenced.
 
 Grinder features include:
 
--   shotgun or amplicon read libraries
-
--   omics support to generate genomic, transcriptomic, proteomic,
-    metagenomic, metatranscriptomic or metaproteomic datasets
-
--   arbitrary read length distribution and number of reads
-
--   simulation of PCR and sequencing errors (chimeras, point mutations,
-    homopolymers)
-
--   support for paired-end (mate pair) datasets
-
--   specific rank-abundance settings or manually given abundance for
-    each genome, gene or protein
-
--   creation of datasets with a given richness (alpha diversity)
-
--   independent datasets can share a variable number of genomes (beta
-    diversity)
-
--   modeling of the bias created by varying genome lengths or gene copy
-    number
-
--   profile mechanism to store preferred options
-
--   available to biologists or power users through multiple interfaces:
-    GUI, CLI and API
+* shotgun or amplicon read libraries
+* omics support to generate genomic, transcriptomic, proteomic, metagenomic,
+  metatranscriptomic or metaproteomic datasets
+* arbitrary read length distribution and number of reads
+* simulation of PCR and sequencing errors (chimeras, point mutations,
+  homopolymers)
+* support for paired-end (mate pair) datasets
+* specific rank-abundance settings or manually given abundance for each genome,
+  gene or protein
+* creation of datasets with a given richness (alpha diversity)
+* independent datasets can share a variable number of genomes (beta diversity)
+* modeling of the bias created by varying genome lengths or gene copy number
+* profile mechanism to store preferred options
+* available to biologists or power users through multiple interfaces: GUI, CLI
+  and API
 
 Briefly, given a FASTA file containing reference sequence (genomes,
 genes, transcripts or proteins), Grinder performs the following steps:
 
-1.  Read the reference sequences, and for amplicon datasets, extracts
-    full-length reference PCR amplicons using the provided degenerate
-    PCR primers.
+1. Read the reference sequences, and for amplicon datasets, extracts full-length
+   reference PCR amplicons using the provided degenerate PCR primers.
 
-2.  Determine the community structure based on the provided alpha
-    diversity (number of reference sequences in the library), beta
-    diversity (number of reference sequences in common between several
-    independent libraries) and specified rank- abundance model.
+1. Determine the community structure based on the provided alpha diversity
+   (number of reference sequences in the library), beta diversity (number of
+   reference sequences in common between several independent libraries) and
+   specified rank- abundance model.
 
-3.  Take shotgun reads from the reference sequences or amplicon reads
-    from the full- length reference PCR amplicons. The reads may be
-    paired-end reads when an insert size distribution is specified. The
-    length of the reads depends on the provided read length distribution
-    and their abundance depends on the relative abundance in the
-    community structure. Genome length may also biases the number of
-    reads to take for shotgun datasets at this step. Similarly, for
-    amplicon datasets, the number of copies of the target gene in the
-    reference genomes may bias the number of reads to take.
+1. Take shotgun reads from the reference sequences or amplicon reads from the
+   full- length reference PCR amplicons. The reads may be paired-end reads when
+   an insert size distribution is specified. The length of the reads depends on
+   the provided read length distribution and their abundance depends on the
+   relative abundance in the community structure. Genome length may also biases
+   the number of reads to take for shotgun datasets at this step. Similarly, for
+   amplicon datasets, the number of copies of the target gene in the reference
+   genomes may bias the number of reads to take.
 
-4.  Alter reads by inserting sequencing errors (indels, substitutions
-    and homopolymer errors) following a position-specific model to
-    simulate reads created by current sequencing technologies (Sanger,
-    454, Illumina). Write the reads and their quality scores in FASTA,
-    QUAL and FASTQ files.
+1. Alter reads by inserting sequencing errors (indels, substitutions and
+   homopolymer errors) following a position-specific model to simulate reads
+   created by current sequencing technologies (Sanger, 454, Illumina). Write the
+   reads and their quality scores in FASTA, QUAL and FASTQ files.
 
-------------------------------------------------------------------------
-
-CITATION
-========
+## Citation
 
 If you use Grinder in your research, please cite:
 
-       Angly FE, Willner D, Rohwer F, Hugenholtz P, Tyson GW (2012), Grinder: a
-       versatile amplicon and shotgun sequence simulator, Nucleic Acids Reseach
-
+```
+Angly FE, Willner D, Rohwer F, Hugenholtz P, Tyson GW (2012), Grinder: a versatile amplicon and shotgun sequence simulator, Nucleic Acids Reseach
+```
 Available from <http://dx.doi.org/10.1093/nar/gks251>.
 
-------------------------------------------------------------------------
-
-VERSION
-=======
-
-This document refers to grinder version 0.5.2
-
-------------------------------------------------------------------------
-
-AUTHOR
-======
+## Author
 
 Florent Angly \<<florent.angly@gmail.com>\>
 
-------------------------------------------------------------------------
-
-INSTALLATION
-============
-
-Dependencies
-------------
+## Installation
 
 You need to install these dependencies first:
 
--   Perl (\>= 5.6)
-
-    <http://www.perl.com/download.csp>
-
--   make
-
-    Many systems have make installed by default. If your system does
-    not, you should install the implementation of make of your choice,
-    e.g. GNU make: <http://www.gnu.org/s/make/>
-
-The following CPAN Perl modules are dependencies that will be installed
-automatically for you:
-
--   Bioperl modules (\>=1.6.901).
-
-    Note that some unreleased Bioperl modules have been included in
-    Grinder.
-
--   Getopt::Euclid (\>= 0.3.4)
-
--   List::Util
-
-    First released with Perl v5.7.3
-
--   Math::Random::MT (\>= 1.13)
-
--   version (\>= 0.77)
-
-    First released with Perl v5.9.0
-
-Procedure
----------
+* [Perl](http://www.perl.com/download.csp) (>= 5.6)
+* [make](http://www.gnu.org/s/make/)
+* The following CPAN Perl modules are dependencies that will be installed
+  automatically for you:
+  * `Bioperl` modules (>=1.6.901). Note that some unreleased Bioperl modules
+    have been included in Grinder.
+  * `Getopt::Euclid` (>= 0.3.4)
+  * `List::Util`. First released with Perl v5.7.3
+  * `Math::Random::MT` (>= 1.13)
+  * `version` (>= 0.77). First released with Perl v5.9.0
 
 To install Grinder globally on your system, run the following commands
 in a terminal or command prompt:
 
-On Linux, Unix, MacOS:
+##### On Linux, Unix, MacOS:
 
-       perl Makefile.PL
-       make
+```
+perl Makefile.PL
+make
+# The following step needs administrator privileges
+make install
+```
 
-And finally, with administrator privileges:
+##### On Windows:
 
-       make install
+```
+perl Makefile.PL
+nmake
+# The following step needs administrator privileges
+nmake install
+```
 
-On Windows, run the same commands but with nmake instead of make.
-
-No administrator privileges?
-----------------------------
-
-If you do not have administrator privileges, Grinder needs to be
-installed in your home directory.
-
-First, follow the instructions to install local::lib at
-<http://search.cpan.org/~apeiron/local-lib-1.008004/lib/local/lib.pm#The_bootstrapping_technique>.
-After local::lib is installed, every Perl module that you install
-manually or through the CPAN command-line application will be installed
+If you don't have administrator privileges, then Grinder needs to be installed
 in your home directory.
 
-Then, install Grinder by following the instructions detailed in the
-"Procedure" section.
+Follow the instructions to install `local::lib`
+[here](http://search.cpan.org/~apeiron/local-lib-1.008004/lib/local/lib.pm#The_bootstrapping_technique).
+Then, every Perl module that you install manually or through the CPAN
+command-line application will be installed in your home directory. At last,
+install Grinder by following the instructions detailed as above.
 
-------------------------------------------------------------------------
+## Running Grinder
 
-RUNNING GRINDER
-===============
+You can run Grinder using the
 
-After installation, you can run Grinder using a command-line interface
-(CLI), an application programming interface (API) or a graphical user
-interface (GUI) in Galaxy.
+* command-line interface (CLI). see ```grinder --help```
+* programming interface (API). see ```perldoc Grinder```
+* or graphical user interface (GUI) in Galaxy. See the Galaxy documentation
+  [here](http://wiki.g2.bx.psu.edu/FrontPage)
 
-To get the usage of the CLI, type:
 
-      grinder --help
+##### The `utils` folder
 
-More information, including the documentation of the Grinder API, which
-allows you to run Grinder from within other Perl programs, is available
-by typing:
+It's included in the Grinder package and contains the following utilities:
 
-      perldoc Grinder
+* `average genome size`: This calculates the average genome size (in bp) of a
+    simulated random library produced by Grinder.
 
-To run the GUI, refer to the Galaxy documentation at
-<http://wiki.g2.bx.psu.edu/FrontPage>.
+* `change_paired_read_orientation`: This reverses the orientation of each
+    second mate-pair read (ID ending in /2) in a FASTA file.
 
-The 'utils' folder included in the Grinder package contains some
-utilities:
 
-**average genome size:**
+## Reference Sequence Database
 
-:   This calculates the average genome size (in bp) of a simulated
-    random library produced by Grinder.
+A variety of FASTA databases can be used as input for Grinder. For example,
+[GreenGenes database](http://greengenes.lbl.gov/Download),
+[RDP](http://rdp.cme.msu.edu) or [Silva](http://www.arb-silva.de). They all
+provide many 16S rRNA sequences, but Silva includes eukaryotic sequences, as
+well.
 
-**change\_paired\_read\_orientation:**
+While 16S rRNA is a popular gene, datasets containing any type of gene could can
+used in the same fashion to generate simulated amplicon datasets, provided that
+appropriate primers are used.
 
-:   This reverses the orientation of each second mate-pair read (ID
-    ending in /2) in a FASTA file.
-
-------------------------------------------------------------------------
-
-REFERENCE SEQUENCE DATABASE
-===========================
-
-A variety of FASTA databases can be used as input for Grinder. For
-example, the GreenGenes database
-(<http://greengenes.lbl.gov/Download/Sequence_Data/Fasta_data_files/Isolated_named_strains_16S_aligned.fasta>)
-contains over 180,000 16S rRNA clone sequences from various species
-which would be appropriate to produce a 16S rRNA amplicon dataset. A set
-of over 41,000 OTU representative sequences and their affiliation in
-seven different taxonomic sytems can also be used for the same purpose
-(<http://greengenes.lbl.gov/Download/OTUs/gg_otus_6oct2010/rep_set/gg_97_otus_6oct2010.fasta>
-and
-<http://greengenes.lbl.gov/Download/OTUs/gg_otus_6oct2010/taxonomies/>).
-The RDP (<http://rdp.cme.msu.edu/download/release10_27_unaligned.fa.gz>)
-and Silva
-(<http://www.arb-silva.de/no_cache/download/archive/release_108/Exports/>)
-databases also provide many 16S rRNA sequences and Silva includes
-eukaryotic sequences. While 16S rRNA is a popular gene, datasets
-containing any type of gene could be used in the same fashion to
-generate simulated amplicon datasets, provided appropriate primers are
-used.
-
-The \>2,400 curated microbial genome sequences in the NCBI RefSeq
-collection (<ftp://ftp.ncbi.nih.gov/refseq/release/microbial/>) would
-also be suitable for producing 16S rRNA simulated datasets (using the
-adequate primers). However, the lower diversity of this database
-compared to the previous two makes it more appropriate for producing
-artificial microbial metagenomes. Individual genomes from this database
-are also very suitable for the simulation of single or double-barreled
-shotgun libraries. Similarly, the RefSeq database contains over 3,100
-curated viral sequences (<ftp://ftp.ncbi.nih.gov/refseq/release/viral/>)
-which can be used to produce artificial viral metagenomes.
+The over 2,400 curated microbial genome sequences in the
+[NCBI RefSeq microbial collection](ftp://ftp.ncbi.nih.gov/refseq/release/microbial/)
+would also be suitable for producing 16S rRNA simulated datasets (using the
+adequate primers). However, the lower diversity of this database compared to the
+previous two makes it more appropriate for producing artificial microbial
+metagenomes. Individual genomes from this database are also very suitable for
+the simulation of single or double-barreled shotgun libraries. Similarly, the
+[RefSeq viral collection](ftp://ftp.ncbi.nih.gov/refseq/release/viral/) contains
+over 3,100 curated viral sequences which can be used to produce artificial viral
+metagenomes.
 
 Quite a few eukaryotic organisms have been sequenced and their genome or
 genes can be the basis for simulating genomic, transcriptomic (RNA-seq)
-or proteomic datasets. For example, you can use the human genome
-available at <ftp://ftp.ncbi.nih.gov/refseq/H_sapiens/RefSeqGene/>, the
-human transcripts downloadable from
-<ftp://ftp.ncbi.nih.gov/refseq/H_sapiens/mRNA_Prot/human.rna.fna.gz> or
-the human proteome at
-<ftp://ftp.ncbi.nih.gov/refseq/H_sapiens/mRNA_Prot/human.protein.faa.gz>.
+or proteomic datasets. For example, you can use 
+* the human genome available at ftp://ftp.ncbi.nih.gov/refseq/H_sapiens/RefSeqGene/
+* the human transcripts at ftp://ftp.ncbi.nih.gov/refseq/H_sapiens/mRNA_Prot/human.rna.fna.gz
+* or the human proteome at ftp://ftp.ncbi.nih.gov/refseq/H_sapiens/mRNA_Prot/human.protein.faa.gz
 
-------------------------------------------------------------------------
+## CLI Examples
 
-CLI EXAMPLES
-============
+A shotgun DNA library with a coverage of 0.1X
 
-Here are a few examples that illustrate the use of Grinder in a
-terminal:
+```
+grinder -reference_file genomes.fna -coverage_fold 0.1
+```
 
-1.  A shotgun DNA library with a coverage of 0.1X
+Same thing but save the result files in a specific folder and with a specific
+name
 
-           grinder -reference_file genomes.fna -coverage_fold 0.1
+```
+grinder -reference_file genomes.fna -coverage_fold 0.1 -base_name my_name -output_dir my_dir
+```
 
-2.  Same thing but save the result files in a specific folder and with a
-    specific name
+A DNA shotgun library with 1000 reads
 
-           grinder -reference_file genomes.fna -coverage_fold 0.1 -base_name my_name -output_dir my_dir
+```
+grinder -reference_file genomes.fna -total_reads 1000
+```
 
-3.  A DNA shotgun library with 1000 reads
+A DNA shotgun library where species are distributed according to a power law
 
-           grinder -reference_file genomes.fna -total_reads 1000
+```
+grinder -reference_file genomes.fna -abundance_model powerlaw 0.1
+```
 
-4.  A DNA shotgun library where species are distributed according to a
-    power law
+A DNA shotgun library with 123 genomes taken random from the given genomes
 
-           grinder -reference_file genomes.fna -abundance_model powerlaw 0.1
+```
+grinder -reference_file genomes.fna -diversity 123
+```
 
-5.  A DNA shotgun library with 123 genomes taken random from the given
-    genomes
+Two DNA shotgun libraries that have 50% of the species in common
 
-           grinder -reference_file genomes.fna -diversity 123
+```
+grinder -reference_file genomes.fna -num_libraries 2 -shared_perc 50
+```
 
-6.  Two DNA shotgun libraries that have 50% of the species in common
+Two DNA shotgun library with no species in common and distributed according to a
+exponential rank-abundance model. Note that because the parameter value for the
+exponential model is omitted, each library uses a different randomly chosen
+value:
 
-           grinder -reference_file genomes.fna -num_libraries 2 -shared_perc 50
+```
+grinder -reference_file genomes.fna -num_libraries 2 -abundance_model exponential
+```
 
-7.  Two DNA shotgun library with no species in common and distributed
-    according to a exponential rank-abundance model. Note that because
-    the parameter value for the exponential model is omitted, each
-    library uses a different randomly chosen value:
+A DNA shotgun library where species relative abundances are manually specified
 
-           grinder -reference_file genomes.fna -num_libraries 2 -abundance_model exponential
+```
+grinder -reference_file genomes.fna -abundance_file my_abundances.txt
+```
 
-8.  A DNA shotgun library where species relative abundances are manually
-    specified
+A DNA shotgun library with Sanger reads
 
-           grinder -reference_file genomes.fna -abundance_file my_abundances.txt
+```
+grinder -reference_file genomes.fna -read_dist 800 -mutation_dist linear 1 2 -mutation_ratio 80 20
+```
 
-9.  A DNA shotgun library with Sanger reads
+A DNA shotgun library with first-generation 454 reads
 
-           grinder -reference_file genomes.fna -read_dist 800 -mutation_dist linear 1 2 -mutation_ratio 80 20
+```
+grinder -reference_file genomes.fna -read_dist 100 normal 10 -homopolymer_dist balzer
+```
 
-10. A DNA shotgun library with first-generation 454 reads
+A paired-end DNA shotgun library, where the insert size is normally distributed
+around 2.5 kbp and has 0.2 kbp standard deviation
 
-           grinder -reference_file genomes.fna -read_dist 100 normal 10 -homopolymer_dist balzer
+```
+grinder -reference_file genomes.fna -insert_dist 2500 normal 200
+```
 
-11. A paired-end DNA shotgun library, where the insert size is normally
-    distributed around 2.5 kbp and has 0.2 kbp standard deviation
+A transcriptomic dataset
 
-           grinder -reference_file genomes.fna -insert_dist 2500 normal 200
+```
+grinder -reference_file transcripts.fna
+```
 
-12. A transcriptomic dataset
+A unidirectional transcriptomic dataset
 
-           grinder -reference_file transcripts.fna
+```
+grinder -reference_file transcripts.fna -unidirectional 1
+```
 
-13. A unidirectional transcriptomic dataset
+**Note** the use of `-unidirectional 1` to prevent reads to be taken from the
+reverse-complement of the reference sequences.
 
-           grinder -reference_file transcripts.fna -unidirectional 1
+A proteomic dataset
 
-    Note the use of -unidirectional 1 to prevent reads to be taken from
-    the reverse- complement of the reference sequences.
+```
+grinder -reference_file proteins.faa -unidirectional 1
+```
 
-14. A proteomic dataset
+A 16S rRNA amplicon library
+```
+grinder -reference_file 16Sgenes.fna -forward_reverse 16Sprimers.fna -length_bias 0 -unidirectional 1
+```
 
-           grinder -reference_file proteins.faa -unidirectional 1
+**Note** the use of `-length_bias 0` because reference sequence length should
+not affect the relative abundance of amplicons.
 
-15. A 16S rRNA amplicon library
+The same amplicon library with 20% of chimeric reads (90% bimera, 10% trimera)
 
-           grinder -reference_file 16Sgenes.fna -forward_reverse 16Sprimers.fna -length_bias 0 -unidirectional 1
+```
+grinder -reference_file 16Sgenes.fna -forward_reverse 16Sprimers.fna -length_bias 0 -unidirectional 1 -chimera_perc 20 -chimera_dist 90 10
+```
 
-    Note the use of -length\_bias 0 because reference sequence length
-    should not affect the relative abundance of amplicons.
+Three 16S rRNA amplicon libraries with specified MIDs and no reference sequences
+in common
 
-16. The same amplicon library with 20% of chimeric reads (90% bimera,
-    10% trimera)
+```
+grinder -reference_file 16Sgenes.fna -forward_reverse 16Sprimers.fna -length_bias 0 -unidirectional 1 -num_libraries 3 -multiplex_ids MIDs.fna
+```
 
-           grinder -reference_file 16Sgenes.fna -forward_reverse 16Sprimers.fna -length_bias 0 -unidirectional 1 -chimera_perc 20 -chimera_dist 90 10
+Reading reference sequences from the standard input, which allows you to
+decompress FASTA files on the fly:
 
-17. Three 16S rRNA amplicon libraries with specified MIDs and no
-    reference sequences in common
+```
+zcat microbial_db.fna.gz | grinder -reference_file - -total_reads 100
+```
 
-           grinder -reference_file 16Sgenes.fna -forward_reverse 16Sprimers.fna -length_bias 0 -unidirectional 1 -num_libraries 3 -multiplex_ids MIDs.fna
-
-18. Reading reference sequences from the standard input, which allows
-    you to decompress FASTA files on the fly:
-
-           zcat microbial_db.fna.gz | grinder -reference_file - -total_reads 100
-
-------------------------------------------------------------------------
-
-CLI REQUIRED ARGUMENTS
-======================
+CLI Required Arguments
 
 **-rf \<reference\_file\> | -reference\_file \<reference\_file\> | -gf \<reference\_file\> | -genome\_file \<reference\_file\>**
 
