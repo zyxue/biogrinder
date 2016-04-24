@@ -1,39 +1,6 @@
-*This is a copy from
-http://sourceforge.net/projects/biogrinder/files/biogrinder/Grinder-0.5.3/Grinder-0.5.3.tar.gz
-with better formatted README, no source code has been changed.*
+# Grinder
 
-<!-- it's odd that in the table of contents that some words need to be
-connected with dash while others with underscore in order to make linking work
-when rendered on github page -->
-
-1. [NAME](#name)
-1. [DESCRIPTION](#description)
-1. [CITATION](#citation)
-1. [VERSION](#version)
-1. [AUTHOR](#author)
-1. [INSTALLATION](#installation)
-   1. [Dependencies](#dependencies)
-   1. [Procedure](#procedure)
-   1. [No administrator privileges?](#no-administrator-privileges)
-1. [RUNNING GRINDER](#running-grinder)
-1. [REFERENCE SEQUENCE DATABASE](#reference-sequence-database)
-1. [CLI EXAMPLES](#cli-examples)
-1. [CLI REQUIRED ARGUMENTS](#cli-required-arguments)
-1. [CLI OPTIONAL ARGUMENTS](#cli-optional-arguments)
-1. [CLI OUTPUT](#cli-output)
-1. [API EXAMPLES](#api-examples)
-1. [API METHODS](#api-methods)
-   1. [new](#new)
-   1. [next\_lib](#next_lib)
-   1. [next\_read](#next_read)
-   1. [get\_random\_seed](#get_random_seed)
-1. [COPYRIGHT](#copyright)
-1. [BUGS](#bugs)
-
-## Name
-
-Grinder - A versatile omics shotgun and amplicon sequencing read
-simulator
+A versatile omics shotgun and amplicon sequencing read simulator
 
 ## Description
 
