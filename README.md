@@ -405,94 +405,34 @@ while ( $factory->next_lib ) {
 }
 ```
 
-API METHODS
-===========
 
-The rest of the documentation details the available Grinder API methods.
+## Copyright
 
-new
----
+Copyright 2009-2012 Florent ANGLY (florent.angly@gmail.com)
 
-Title : new
-
-Function: Create a new Grinder factory initialized with the passed
-arguments. Available parameters described in the OPTIONS section.
-
-Usage : my \$factory = Grinder-\>new( -reference\_file =\> 'genomes.fna'
-);
-
-Returns : a new Grinder object
-
-next\_lib
----------
-
-Title : next\_lib
-
-Function: Go to the next shotgun library to process.
-
-Usage : my \$struct = \$factory-\>next\_lib;
-
-Returns : Community structure to be used for this library, where
-\$struct-\>{ids} is an array reference containing the IDs of the genome
-making up the community (sorted by decreasing relative abundance) and
-\$struct-\>{abs} is an array reference of the genome abundances (in the
-same order as the IDs).
-
-next\_read
-----------
-
-Title : next\_read
-
-Function: Create an amplicon or shotgun read for the current library.
-
-Usage : my \$read = \$factory-\>next\_read; \# for single read my
-\$mate1 = \$factory-\>next\_read; \# for mate pairs my \$mate2 =
-\$factory-\>next\_read;
-
-Returns : A sequence represented as a Bio::Seq::SimulatedRead object
-
-get\_random\_seed
------------------
-
-Title : get\_random\_seed
-
-Function: Return the number used to seed the pseudo-random number
-generator
-
-Usage : my \$seed = \$factory-\>get\_random\_seed;
-
-Returns : seed number
+Grinder is free software: you can redistribute it and/or modify it under the
+terms of the GNU General Public License (GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version. Grinder is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with
+Grinder. If not, see http://www.gnu.org/licenses/.
 
 ------------------------------------------------------------------------
 
-COPYRIGHT
-=========
+## Bugs
 
-Copyright 2009-2012 Florent ANGLY \<<florent.angly@gmail.com>\>
+All complex software has bugs lurking in it, and this program is no exception.
+If you find a bug, please report it on the
+[SourceForge Tracker](http://sourceforge.net/tracker/?group_id=244196&atid=1124737)
+for Grinder:
 
-Grinder is free software: you can redistribute it and/or modify it under
-the terms of the GNU General Public License (GPL) as published by the
-Free Software Foundation, either version 3 of the License, or (at your
-option) any later version. Grinder is distributed in the hope that it
-will be useful, but WITHOUT ANY WARRANTY; without even the implied
-warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details. You should have received a
-copy of the GNU General Public License along with Grinder. If not, see
-\<http://www.gnu.org/licenses/\>.
+Bug reports, suggestions and patches are welcome. Grinder's code is developed on
+[Sourceforge](http://sourceforge.net/scm/?type=git&group_id=244196)) and is
+under Git revision control. To get started with a patch, do:
 
-------------------------------------------------------------------------
+```
+git clone git://biogrinder.git.sourceforge.net/gitroot/biogrinder/biogrinder
+```
 
-BUGS
-====
-
-All complex software has bugs lurking in it, and this program is no
-exception. If you find a bug, please report it on the SourceForge
-Tracker for Grinder:
-[http://sourceforge.net/tracker/](http://sourceforge.net/tracker/?group_id=244196&atid=1124737)
-
-Bug reports, suggestions and patches are welcome. Grinder's code is
-developed on Sourceforge
-([http://sourceforge.net/scm/](http://sourceforge.net/scm/?type=git&group_id=244196))
-and is under Git revision control. To get started with a patch, do:
-
-       git clone git://biogrinder.git.sourceforge.net/gitroot/biogrinder/biogrinder
