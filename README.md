@@ -1,3 +1,24 @@
+# Note
+
+I created this repo of biogrinder mainly for reading the `README.md` in a better
+formatted and easier way.
+
+The source was originally downloaded from
+
+https://sourceforge.net/projects/biogrinder/files/biogrinder/Grinder-0.5.3/Grinder-0.5.3.tar.gz.
+
+A newer version is avialable now at
+
+https://sourceforge.net/projects/biogrinder/files/biogrinder/.
+
+This repo is not for properly tracking development history of biogrinder, its
+code history is at
+
+https://sourceforge.net/p/biogrinder/code/ci/master/tree/.
+
+Please see the <a href="#bugs">end</a> of this document for how to clone it.
+
+
 # Grinder
 
 A versatile omics shotgun and amplicon sequencing read simulator
@@ -396,7 +417,7 @@ If you find a bug, please report it on the
 for Grinder:
 
 Bug reports, suggestions and patches are welcome. Grinder's code is developed on
-[Sourceforge](http://sourceforge.net/scm/?type=git&group_id=244196)) and is
+[Sourceforge](http://sourceforge.net/scm/?type=git&group_id=244196) and is
 under Git revision control. To get started with a patch, do:
 
 ```
