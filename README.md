@@ -1,7 +1,7 @@
 # Note
 
-I created this repo of biogrinder mainly for reading the `README.md` in a better
-formatted and easier way.
+**I created this repo of biogrinder mainly for reading the `README.md` in a better
+formatted and easier way.**
 
 The source was originally downloaded from
 
